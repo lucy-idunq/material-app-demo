@@ -7,7 +7,7 @@ import SearchIcon from '@material-ui/icons/Search';
 
 const useStyles =makeStyles({
     root:{
-        backgroundColor:'#fff',
+        backgroundColor:'#fff'
     },
     searchInput:{
         opacity:'0.6',
@@ -44,13 +44,13 @@ const Header = props => {
                     </Grid>
                     <Grid item sm></Grid>
                     <Grid item>
-                        <IconButton classes={{root:classes.btnRoot,label:classes.btnLabel}}>
-                            <Badge badgeContent={4} color='secondary'>
+                        <IconButton >
+                            <Badge badgeContent={4} color={'primary'}>
                                 <NotificationsNoneIcon />
                             </Badge>
                         </IconButton>
                         <IconButton >
-                            <Badge badgeContent={3} color='secondary'>
+                            <Badge badgeContent={3} color={"secondary"}>
                                 <ChatBubbleOutlineIcon />
                             </Badge>
                         </IconButton>
