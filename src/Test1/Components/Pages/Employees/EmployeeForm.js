@@ -1,53 +1,83 @@
-import React,{useState} from 'react'
-import Employee from './Employee'
-import { Grid, TextField, makeStyles } from '@material-ui/core';
+import React from 'react'
+import { Grid } from '@material-ui/core';
+import { useForm, Form } from './useForm';
+import Controls from '../../controls/Controls'
+import * as employeeService from '../../../Services/employeeService'
 
-
-const useStyles = makeStyles(theme=>({
-    root:{
-'& .MuiFormControl-root':{
-    width:'100%',
-    margin:theme.spacing(4)
-}
-    }
-}))
+const genderItems = [
+    { id: 'male', title: 'Male' },
+    { id: 'female', title: 'Feale' },
+    { id: 'other', title: 'other' },
+]
 
 const initialFValues = {
-    id:0,
-    fullName:'',
-    email:'',
-    mobile:'',
-    city:'',
-    gender:'male',
-    departmentId:'',
-    hireDate:new Date(),
-    isPermanent:false
+    id: 0,
+    fullName: '',
+    email: '',
+    mobile: '',
+    city: '',
+    gender: 'male',
+    departmentId: '',
+    hireDate: new Date(),
+    isPermanent: false
 }
 
-const EmployeeForm = props =>{
-    const [values,setValues] = useState(initialFValues);
-    const classes = useStyles()
+const EmployeeForm = props => {
 
-    return(
-       <form className={classes.root}>
-           <Grid container>
-               <Grid item xs={6}> 
-               <TextField 
-               variant="outlined"
-               label="Full Name"
-               value={values.fullName}
-               />
-               </Grid>
-               <Grid item xs={6}>
-               <TextField 
-               variant="outlined"
-               label="Email"
-               value={values.email}
-               />
-                    </Grid>
+    const { values, setValues, handleInputChage } = useForm(initialFValues)
 
-           </Grid>
-       </form>
+
+
+    return (
+        <Form>
+            <Grid container>
+                <Grid item xs={6}>
+                    <Controls.Input name="fullName"
+                        label="Full Name"
+                        value={values.fullName}
+                        onChange={handleInputChage}
+                    />
+                </Grid>
+                <Grid item xs={6}>
+                    <Controls.Input
+                        label="Email"
+                        name="email"
+                        value={values.email}
+                        onChange={handleInputChage}
+                    />
+                </Grid>
+                <Grid item xs={6}>
+                    <Controls.RadioGroup
+                    name="gender"
+                    label="Gender"
+                    value={values.gender}
+                    onChange={handleInputChage}
+                    items={genderItems}
+                    />
+                    <Controls.Select
+                    name='departmentId'
+                    label='Department'
+                    value={values.departmentId}
+                    onChange={handleInputChage}
+                    options={employeeService.getDepartmentCollection()}
+                    />
+                    <Controls.Datepicker
+                    name='hireDate'
+                    label="Hire Date"
+                    value={values.isPermanent}
+                    onChange={handleInputChage}
+                    />
+                    <Controls.Checkbox
+                    name='isPermanent'
+                    label='Permanent Employee'
+                    value={values.isPermanent}
+                    onChange={handleInputChage}
+                    />
+                   
+                </Grid>
+               
+            </Grid>
+        </Form>
     )
 }
 export default EmployeeForm;

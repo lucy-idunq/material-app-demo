@@ -2,9 +2,6 @@
 import { CssBaseline, makeStyles, createMuiTheme ,ThemeProvider} from '@material-ui/core';
 import Header from './Test1/Components/Header';
 import SideMenu from './Test1/Components/SideMenu';
-import PageHeader from './Test1/Components/PageHeader';
-
-import EmployeeForm from './Test1/Components/Pages/Employees/EmployeeForm';
 import Employee from './Test1/Components/Pages/Employees/Employee';
 
 const theme = createMuiTheme({
