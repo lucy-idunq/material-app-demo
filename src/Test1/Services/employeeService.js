@@ -1,3 +1,4 @@
+import { keys } from "@material-ui/core/styles/createBreakpoints";
 
 const KEYS ={
     employees:'employees',
@@ -16,6 +17,19 @@ export function insertEmployee(data){
     let employees = getAllEmployees();
     employees.push(data)
     data['id'] = generateEmployeeId();
+    localStorage.setItem(KEYS.employees,JSON.stringify(employees))
+}
+
+export function updateEmployee(data){
+    let employees = getAllEmployees();
+    let recordIndex = employees.findIndex(x=> x.id === data.id)
+    employees[recordIndex] = {...data}
+    localStorage.setItem(KEYS.employees,JSON.stringify(employees))
+}
+
+export function deleteEmployee(id){
+    let employees = getAllEmployees()
+    employees = employees.filter(x => x.id != id)
     localStorage.setItem(KEYS.employees,JSON.stringify(employees))
 }
 

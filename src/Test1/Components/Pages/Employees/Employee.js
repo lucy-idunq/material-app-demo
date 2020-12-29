@@ -11,6 +11,8 @@ import * as employeeService from '../../../Services/employeeService'
 import Controls from '../../controls/Controls'
 import { Search, Add } from '@material-ui/icons'
 import Popup from '../../controls/Popup'
+import Notification from '../../controls/Notification'
+import ConfirmDialog from '../../ConfirmDialog'
 
 const useStyles = makeStyles(theme => ({
     PageContent: {
@@ -38,10 +40,12 @@ const Employee = props => {
 
     const classes = useStyles()
 
-    const [recordForEdit,setRecordForEdit] = useState(null)
+    const [recordForEdit, setRecordForEdit] = useState(null)
     const [records, setRecords] = useState(employeeService.getAllEmployees())
     const [filterFn, setFilterFn] = useState({ fn: items => { return items; } })
     const [openPopup, setOpenPopup] = useState(false)
+    const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
+    const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', subTitle: '' })
 
     const { TblContainer, TblHead, TblPagination, recordsAfterPagingAndSorting } = useTable(records, headCells, filterFn);
 
@@ -58,15 +62,40 @@ const Employee = props => {
     }
 
     const addOrEdit = (employee, resetForm) => {
-        employeeService.insertEmployee(employee)
+        if (employee.id == 0)
+            employeeService.insertEmployee(employee)
+        else
+            employeeService.updateEmployee(employee)
         resetForm();
+        setRecordForEdit(null)
         setOpenPopup(false)
         setRecords(employeeService.getAllEmployees())
+        setNotify({
+            isOpen: true,
+            message: 'submitted Successfully',
+            type: 'success'
+        })
     }
 
-    const openInPopup = item =>{
+    const onDelete = (id) => {
+        // if (window.confirm('Are you sure to delete this record?'))
+        setConfirmDialog({
+            ...confirmDialog,
+            isOpen: false
+        })
+        employeeService.deleteEmployee(id)
+        setRecords(employeeService.getAllEmployees())
+        setNotify({
+            isOpen: true,
+            message: 'Deleted Successfully',
+            type: 'error'
+        })
+    }
+
+    const openInPopup = item => {
         setRecordForEdit(item)
         setOpenPopup(true)
+
     }
 
     return (
@@ -94,7 +123,7 @@ const Employee = props => {
                         variant="outlined"
                         startIcon={<Add />}
                         className={classes.newButton}
-                        onClick={() => setOpenPopup(true)}
+                        onClick={() => { setOpenPopup(true); setRecordForEdit(null) }}
                     />
                 </Toolbar>
                 <TblContainer>
@@ -110,11 +139,19 @@ const Employee = props => {
                                     <TableCell>
                                         <Controls.ActionButton
                                             color='primary'
-                                            onClick={()=>{ openInPopup(item)}}>
+                                            onClick={() => { openInPopup(item) }}>
                                             <EditOutlinedIcon fontSize='small' />
                                         </Controls.ActionButton>
                                         <Controls.ActionButton
-                                            color='secondary'>
+                                            color='secondary'
+                                            onClick={() => {
+                                                setConfirmDialog({
+                                                    isOpen: true,
+                                                    title: 'Are you sure to delete this record?',
+                                                    subTitle: "You can't undo this operation",
+                                                    onConfirm: () => { onDelete(item.id) }
+                                                })
+                                            }}>
                                             <CloseIcon fontSize='small' />
                                         </Controls.ActionButton>
                                     </TableCell>
@@ -130,13 +167,19 @@ const Employee = props => {
                 openPopup={openPopup}
                 setOpenPopup={setOpenPopup}
             >
-                <EmployeeForm 
-                addOrEdit={addOrEdit} 
-                recordForEdit={recordForEdit}
+                <EmployeeForm
+                    addOrEdit={addOrEdit}
+                    recordForEdit={recordForEdit}
                 />
             </Popup>
-
-
+            <Notification
+                notify={notify}
+                setNotify={setNotify}
+            />
+            <ConfirmDialog
+                confirmDialog={confirmDialog}
+                setConfirmDialog={setConfirmDialog}
+            />
         </>
     )
 }
